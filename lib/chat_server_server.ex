@@ -1,16 +1,11 @@
 defmodule ChatServer.Server do
-  use GenServer
   @name     :server
 
-  def start_link do
+  def start do
     pid = spawn(__MODULE__, :generator, [[]])
+    IO.puts "Starting server with pid #{inspect pid}"
     :global.register_name(@name, pid)
-    IO.puts "Starting server"
-
-    GenServer.start_link(__MODULE__, [], name: __MODULE__)
   end
-
-  # def handle_cast({:register, client_pid})
 
   def register(client_pid) do
     send :global.whereis_name(@name), { :register, client_pid }
@@ -29,7 +24,6 @@ defmodule ChatServer.Server do
       { :message, content} ->
         clients
           |> Enum.each(&(send &1, { :message, content }))
-
         generator(clients)
     end
   end

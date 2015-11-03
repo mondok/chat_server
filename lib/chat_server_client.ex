@@ -1,15 +1,20 @@
-# c("lib/chatter.ex")
-# Node.connect :"one@mmondok-ltm"
-# killall -9 beam.smp
-
 defmodule ChatServer.Client do
   def start(nickname) do
-    Agent.start_link(fn -> Map.new end, name: __MODULE__)
+    start_with_host nickname, Application.get_env(:chat_server, :node_host)
+  end
 
-    set_name(nickname)
-    pid = spawn(__MODULE__, :receiver, [])
+  def start_with_host(_, nil), do: IO.puts "No host specified"
 
-    ChatServer.Server.register(pid)
+  def start_with_host(nickname, host) do
+    Node.connect(String.to_atom(host))
+    receive do
+    after
+      2000 ->
+        Agent.start_link(fn -> Map.new end, name: __MODULE__)
+        set_name(nickname)
+        pid = spawn(__MODULE__, :receiver, [])
+        ChatServer.Server.register(pid)
+    end
   end
 
   def set_name(nickname) do
