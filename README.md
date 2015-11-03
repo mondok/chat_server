@@ -1,19 +1,36 @@
 # ChatServer
 
-**TODO: Add description**
+Simple Elixir PoC chat server.
 
-## Installation
+## Running Server
+On window 1, run:
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed as:
+```
+iex --sname one -S mix
+```
 
-  1. Add chat_server to your list of dependencies in `mix.exs`:
+Once you're in the console, start the server with:
 
-        def deps do
-          [{:chat_server, "~> 0.0.1"}]
-        end
+```
+ChatServer.Server.start
+```
 
-  2. Ensure chat_server is started before your application:
+On window 2, run:
+```
+HOST="whatever@thehostwas" iex --sname two -S mix
+```
 
-        def application do
-          [applications: [:chat_server]]
-        end
+Once you're in the console, start a client with:
+```
+ChatServer.Client.start "some_nickname"
+```
+
+Send messages with:
+```
+ChatServer.Client.send_message "Hello world"
+```
+
+Finally, kill any lingering BEAM processes:
+```
+killall -9 beam.smp
+```

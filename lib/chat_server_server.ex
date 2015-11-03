@@ -3,7 +3,7 @@ defmodule ChatServer.Server do
 
   def start do
     pid = spawn(__MODULE__, :generator, [[]])
-    IO.puts "Starting server with pid #{inspect pid}"
+    IO.puts "Starting server with pid #{inspect pid} on host #{Node.self}"
     :global.register_name(@name, pid)
   end
 
